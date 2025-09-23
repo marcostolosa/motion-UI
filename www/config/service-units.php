@@ -6,15 +6,15 @@
  */
 $units = [
     // This cleans temporary files every hour
-    // 'cleanup-temp-files' => [
-    //     'title' => 'Temporary files cleanup',
-    //     'description' => 'Ensures temporary files under Motion-UI data directory are cleaned',
-    //     'controller' => 'Service\Unit\Cleanup\File',
-    //     'method' => 'run',
-    //     'interval' => 'every-day',
-    //     'time' => '00:00',
-    //     'log-dir' => 'cleanup/temporary-files'
-    // ],
+    'cleanup-temp-files' => [
+        'title' => 'Temporary files cleanup',
+        'description' => 'Ensures temporary files under Motion-UI data directory are cleaned',
+        'controller' => 'Service\Unit\Cleanup\File',
+        'method' => 'run',
+        'interval' => 'every-day',
+        'time' => '00:00',
+        'log-dir' => 'cleanup/temporary-files'
+    ],
     // This retrieves notifications from github every hour
     'notifications' => [
         'title' => 'Notifications',

@@ -121,81 +121,6 @@ class Service
     }
 
     /**
-     *  Get notifications
-     */
-    private function getNotifications()
-    {
-        CliLog::log('Getting notifications...');
-
-        try {
-            $mynotification = new \Controllers\Notification();
-            $mynotification->retrieve();
-        } catch (Exception $e) {
-            $this->logController->log('error', 'Service', 'Error while retrieving notifications: ' . $e->getMessage());
-        }
-    }
-
-    /**
-     *  Get current date and time
-     */
-    private function getDate()
-    {
-        return '[' . date('D M j H:i:s') . ']';
-    }
-
-    /**
-     *  Check if a new version is available on Github
-     */
-    private function checkVersion()
-    {
-        CliLog::log('Checking for a new version on github...');
-
-        try {
-            $outputFile = fopen(DATA_DIR . '/version.available', "w");
-
-            curl_setopt($this->curlHandle, CURLOPT_URL, 'https://raw.githubusercontent.com/lbr38/motion-UI/main/www/version');
-            curl_setopt($this->curlHandle, CURLOPT_FILE, $outputFile);
-            curl_setopt($this->curlHandle, CURLOPT_TIMEOUT, 30);
-
-            /**
-             *  Execute curl
-             */
-            curl_exec($this->curlHandle);
-
-            /**
-             *  If curl has failed (meaning a curl param might be invalid)
-             */
-            if (curl_errno($this->curlHandle)) {
-                curl_close($this->curlHandle);
-                fclose($outputFile);
-
-                throw new Exception('Error while retrieving new version from Github (curl error): ' . curl_error($this->curlHandle));
-            }
-
-            /**
-             *  Check that the http return code is 200 (the file has been downloaded)
-             */
-            $status = curl_getinfo($this->curlHandle);
-
-            if ($status["http_code"] != 200) {
-                /**
-                 *  If return code is 404
-                 */
-                if ($status["http_code"] == '404') {
-                    throw new Exception('Error while retrieving new version from Github (file not found)');
-                } else {
-                    throw new Exception('Error while retrieving new version from Github (http return code is: ' . $status["http_code"] . ')');
-                }
-
-                curl_close($this->curlHandle);
-                fclose($outputFile);
-            }
-        } catch (Exception $e) {
-            $this->logController->log('error', 'Service', $e->getMessage());
-        }
-    }
-
-    /**
      *  Check if a motion service restart is needed
      */
     private function restartMotion(string $service)
@@ -324,7 +249,7 @@ class Service
             /**
              *  Run monitoring service
              */
-            $this->runService('system monitoring', 'system-monitoring');
+            // $this->runService('system monitoring', 'system-monitoring');
 
             /**
              *  Execute timelapse
@@ -336,7 +261,7 @@ class Service
             /**
              *  Start websocket server
              */
-            $this->runService('websocket server', 'wss');
+            // $this->runService('websocket server', 'wss');
 
             /**
              *  Execute actions on service start (counter = 0) and then every hour (counter = 720)
@@ -346,12 +271,12 @@ class Service
                 /**
                  *  Check version
                  */
-                $this->checkVersion();
+                // $this->checkVersion();
 
                 /**
                  *  Get notifications
                  */
-                $this->getNotifications();
+                // $this->getNotifications();
 
                 /**
                  *  Every hour, check motion service and add its status in database
@@ -374,9 +299,9 @@ class Service
                     $this->timelapseController->clean($this->timelapseRetention);
                     $this->motionEventController->clean($this->eventRetention);
 
-                    // Clean go2rtc files (logs)
-                    CliLog::log('Cleaning go2rtc logs...');
-                    $this->go2rtcController->clean();
+                    // // Clean go2rtc files (logs)
+                    // CliLog::log('Cleaning go2rtc logs...');
+                    // $this->go2rtcController->clean();
 
                     // Clean autostart logs
                     CliLog::log('Cleaning autostart logs...');
