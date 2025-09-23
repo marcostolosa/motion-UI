@@ -52,7 +52,6 @@
     const mymodal = new Modal();
     const myselect2 = new Select2();
     const mycamera = new Camera();
-    const mychart = new AsyncChart();
     const mysystem = new System();
 </script>
 

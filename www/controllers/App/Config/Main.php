@@ -27,6 +27,10 @@ class Main
         if (!defined('LOGS_DIR')) {
             define('LOGS_DIR', DATA_DIR . '/logs');
         }
+        // Service logs dir
+        if (!defined('SERVICE_LOGS_DIR')) {
+            define('SERVICE_LOGS_DIR', LOGS_DIR . '/service');
+        }
         // Websocket server logs dir
         if (!defined('WS_LOGS_DIR')) {
             define('WS_LOGS_DIR', LOGS_DIR . '/websocket');
