@@ -103,22 +103,6 @@ class Service
     }
 
     /**
-     *  Returns true if motionui service is running
-     */
-    public function motionuiServiceRunning() : bool
-    {
-        $myprocess = new \Controllers\Process('ps aux | grep "motionui.service" | grep -v grep');
-        $myprocess->execute();
-        $myprocess->close();
-
-        if ($myprocess->getExitCode() != 0) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      *  Return motion service log content
      */
     public function getLog(string $log) : string

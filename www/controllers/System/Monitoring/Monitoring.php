@@ -2,8 +2,6 @@
 
 namespace Controllers\System\Monitoring;
 
-use Exception;
-
 class Monitoring
 {
     private $model;

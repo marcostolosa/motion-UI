@@ -32,6 +32,15 @@ $units = [
         'interval' => 'every-minute',
         'log-dir' => 'system/monitoring'
     ],
+    // This monitors motion service status every minute
+    'motion-monitoring' => [
+        'title' => 'Motion service status',
+        'description' => 'Monitors motion service status every minute',
+        'controller' => 'Service\Unit\Monitoring',
+        'method' => 'motionStatus',
+        'interval' => 'every-minute',
+        'log-dir' => 'motion/monitoring'
+    ],
     // This checks for new version of the application every hour
     'version-check' => [
         'title' => 'Version check',
@@ -39,6 +48,15 @@ $units = [
         'controller' => 'Service\Unit\Version',
         'method' => 'get',
         'interval' => 'every-hour',
+    ],
+    // This runs the timelapse function every minute
+    'timelapse' => [
+        'title' => 'Timelapse',
+        'description' => 'Runs the timelapse function to capture images at defined intervals',
+        'controller' => 'Service\Unit\Timelapse',
+        'method' => 'run',
+        'interval' => 'every-minute',
+        'log-dir' => 'camera/timelapse'
     ],
     // This runs the websocket server
     'wss' => [

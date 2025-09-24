@@ -2,8 +2,6 @@
 
 namespace Controllers\Service\Unit;
 
-use Exception;
-
 class Notification extends \Controllers\Service\Service
 {
     private $notificationController;

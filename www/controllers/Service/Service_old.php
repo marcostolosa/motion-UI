@@ -197,20 +197,6 @@ class Service
     }
 
     /**
-     *  Check current motion service status and add it into database
-     */
-    private function monitorMotionStatus()
-    {
-        $status = 'inactive';
-
-        if ($this->motionServiceController->isRunning() === true) {
-            $status = 'active';
-        }
-
-        $this->motionServiceController->setStatusInDb($status);
-    }
-
-    /**
      *  Main function
      */
     public function run()
@@ -254,9 +240,9 @@ class Service
             /**
              *  Execute timelapse
              */
-            if ($this->timelapse === true) {
-                $this->runService('timelapse', 'timelapse');
-            }
+            // if ($this->timelapse === true) {
+            //     $this->runService('timelapse', 'timelapse');
+            // }
 
             /**
              *  Start websocket server
@@ -267,7 +253,7 @@ class Service
              *  Execute actions on service start (counter = 0) and then every hour (counter = 720)
              *  3600 / 5sec (sleep 5) = 720
              */
-            if ($counter == 0 || $counter == 720) {
+            // if ($counter == 0 || $counter == 720) {
                 /**
                  *  Check version
                  */
@@ -281,13 +267,13 @@ class Service
                 /**
                  *  Every hour, check motion service and add its status in database
                  */
-                $this->monitorMotionStatus();
+                // $this->monitorMotionStatus();
 
                 /**
                  *  Reset counter
                  */
-                $counter = 0;
-            }
+            //     $counter = 0;
+            // }
 
             /**
              *  Clean up tasks (at midnight)
@@ -296,7 +282,7 @@ class Service
                 if ($currentTime == '00:00') {
                     // Clean timelapse and motion events depending on retention
                     CliLog::log('Cleaning timelapse images and motion events...');
-                    $this->timelapseController->clean($this->timelapseRetention);
+                    // $this->timelapseController->clean($this->timelapseRetention);
                     $this->motionEventController->clean($this->eventRetention);
 
                     // // Clean go2rtc files (logs)
@@ -304,8 +290,8 @@ class Service
                     // $this->go2rtcController->clean();
 
                     // Clean autostart logs
-                    CliLog::log('Cleaning autostart logs...');
-                    $this->motionAutostartController->clean();
+                    // CliLog::log('Cleaning autostart logs...');
+                    // $this->motionAutostartController->clean();
                 }
             }
 
@@ -314,45 +300,6 @@ class Service
 
             $lastTime = $currentTime;
             $counter++;
-        }
-    }
-
-    /**
-     *  Run this service with the specified parameter
-     */
-    private function runService(string $name, string $parameter, bool $force = false)
-    {
-        try {
-            /**
-             *  Check if the service with specified parameter is already running to avoid running it twice
-             *  A php process must be running
-             *
-             *  If force != false, then the service will be run even if it is already running (e.g: for running multiple scheduled tasks at the same time)
-             */
-            if ($force === false) {
-                $myprocess = new \Controllers\Process('/usr/bin/ps aux | grep "motionui.' . $parameter . '" | grep -v grep');
-                $myprocess->execute();
-                $content = $myprocess->getOutput();
-                $myprocess->close();
-
-                /**
-                 *  Quit if there is already a process running
-                 */
-                if ($myprocess->getExitCode() == 0) {
-                    return;
-                }
-            }
-
-            /**
-             *  Else, run the service with the specified parameter
-             */
-            CliLog::log('Running ' . $name . '...');
-
-            $myprocess = new \Controllers\Process("/usr/bin/php " . ROOT . "/tools/service.php '" . $parameter . "' >/dev/null 2>/dev/null &");
-            $myprocess->execute();
-            $myprocess->close();
-        } catch (Exception $e) {
-            $this->logController->log('error', 'Service', 'Error while launching service with parameter '. $parameter . ': ' . $e->getMessage());
         }
     }
 }

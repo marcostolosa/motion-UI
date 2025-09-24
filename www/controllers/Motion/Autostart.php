@@ -392,32 +392,4 @@ class Autostart
         // Log to console
         echo $log . PHP_EOL;
     }
-
-    /**
-     *  Clean autostart logs
-     */
-    public function clean() : void
-    {
-        if (!is_dir(AUTOSTART_LOGS_DIR)) {
-            return;
-        }
-
-        /**
-         *  Get all log files
-         */
-        $logFiles = glob(AUTOSTART_LOGS_DIR . '/*.log');
-
-        if (empty($logFiles)) {
-            return;
-        }
-
-        /**
-         *  Remove logs older than 7 days
-         */
-        foreach ($logFiles as $logFile) {
-            if (filemtime($logFile) < strtotime('-7 days')) {
-                unlink($logFile);
-            }
-        }
-    }
 }

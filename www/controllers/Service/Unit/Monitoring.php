@@ -2,7 +2,6 @@
 
 namespace Controllers\Service\Unit;
 
-use Exception;
 use Controllers\System\Monitoring\Cpu as Cpu;
 use Controllers\System\Monitoring\Memory as Memory;
 use Controllers\System\Monitoring\Disk as Disk;
@@ -10,12 +9,14 @@ use Controllers\System\Monitoring\Disk as Disk;
 class Monitoring extends \Controllers\Service\Service
 {
     private $monitoringController;
+    private $motionServiceController;
 
     public function __construct(string $unit)
     {
         parent::__construct($unit);
 
         $this->monitoringController = new \Controllers\System\Monitoring\Monitoring();
+        $this->motionServiceController = new \Controllers\Motion\Service();
     }
 
     /**
@@ -34,5 +35,21 @@ class Monitoring extends \Controllers\Service\Service
 
         // Delete old monitoring data (older than 30 days)
         $this->monitoringController->clean(30);
+    }
+
+    /**
+     *  Monitor motion service status and log it
+     */
+    public function motionStatus() : void
+    {
+        parent::log('Logging motion service status');
+
+        $status = 'inactive';
+
+        if ($this->motionServiceController->isRunning() === true) {
+            $status = 'active';
+        }
+
+        $this->motionServiceController->setStatusInDb($status);
     }
 }
