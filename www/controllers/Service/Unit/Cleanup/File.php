@@ -3,6 +3,7 @@
 namespace Controllers\Service\Unit\Cleanup;
 
 use Exception;
+use \Controllers\Filesystem\Directory;
 
 class File extends \Controllers\Service\Service
 {
@@ -106,11 +107,72 @@ class File extends \Controllers\Service\Service
                     }
 
                     // Delete directory
-                    if (!\Controllers\Filesystem\Directory::deleteRecursive($dir)) {
+                    if (!Directory::deleteRecursive($dir)) {
                         throw new Exception('Failed to delete directory ' . $dir);
                     }
 
                     parent::log('Directory ' . $dir . ' deleted');
+                }
+            }
+        }
+
+        /**
+         *  Clean motion event files
+         */
+        if (is_dir(CAPTURES_DIR)) {
+            parent::log('Cleaning motion event files...');
+
+            // Get all event files
+            $files = glob(CAPTURES_DIR . '/*/*/*/*');
+
+            // Get all movies directories
+            $moviesDirs  = glob(CAPTURES_DIR . '/*/*/movies', GLOB_ONLYDIR);
+
+            // Get all pictures directories
+            $picturesDirs = glob(CAPTURES_DIR . '/*/*/pictures', GLOB_ONLYDIR);
+
+            // Merge movies and pictures directories
+            $mediasDirs = array_merge($moviesDirs, $picturesDirs);
+
+            // Get all day directories
+            $dirs = glob(CAPTURES_DIR . '/*/*', GLOB_ONLYDIR);
+
+            // Delete event files older than retention period
+            if (!empty($files)) {
+                foreach ($files as $file) {
+                    if (filemtime($file) < strtotime('-' . MOTION_EVENTS_RETENTION . ' days')) {
+                        if (!unlink($file)) {
+                            throw new Exception('Could not delete file ' . $file);
+                        }
+
+                        parent::log($file . ' deleted');
+                    }
+                }
+            }
+
+            // Remove empty directories (movies and pictures directories)
+            if (!empty($mediasDirs)) {
+                foreach ($mediasDirs as $dir) {
+                    if (Directory::isEmpty($dir)) {
+                        if (!rmdir($dir)) {
+                            throw new Exception('Could not delete empty directory ' . $dir);
+                        }
+
+                        parent::log('Directory ' . $dir . ' deleted');
+                    }
+                }
+            }
+
+            // Remove empty directories (day directories)
+            if (!empty($dirs)) {
+                foreach ($dirs as $dir) {
+                    if (Directory::isEmpty($dir)) {
+                        if (!rmdir($dir)) {
+                            throw new Exception('Could not delete empty directory ' . $dir);
+                        }
+
+                        parent::log('Directory ' . $dir . ' deleted');
+                    }
                 }
             }
         }

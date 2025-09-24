@@ -278,28 +278,28 @@ class Service
             /**
              *  Clean up tasks (at midnight)
              */
-            if ($currentTime != $lastTime) {
-                if ($currentTime == '00:00') {
-                    // Clean timelapse and motion events depending on retention
-                    CliLog::log('Cleaning timelapse images and motion events...');
-                    // $this->timelapseController->clean($this->timelapseRetention);
-                    $this->motionEventController->clean($this->eventRetention);
+            // if ($currentTime != $lastTime) {
+            //     if ($currentTime == '00:00') {
+            //         // Clean timelapse and motion events depending on retention
+            //         CliLog::log('Cleaning timelapse images and motion events...');
+            //         // $this->timelapseController->clean($this->timelapseRetention);
+            //         // $this->motionEventController->clean($this->eventRetention);
 
-                    // // Clean go2rtc files (logs)
-                    // CliLog::log('Cleaning go2rtc logs...');
-                    // $this->go2rtcController->clean();
+            //         // // Clean go2rtc files (logs)
+            //         // CliLog::log('Cleaning go2rtc logs...');
+            //         // $this->go2rtcController->clean();
 
-                    // Clean autostart logs
-                    // CliLog::log('Cleaning autostart logs...');
-                    // $this->motionAutostartController->clean();
-                }
-            }
+            //         // Clean autostart logs
+            //         // CliLog::log('Cleaning autostart logs...');
+            //         // $this->motionAutostartController->clean();
+            //     }
+            // }
 
-            pcntl_signal_dispatch();
-            sleep(5);
+            // pcntl_signal_dispatch();
+            // sleep(5);
 
-            $lastTime = $currentTime;
-            $counter++;
+            // $lastTime = $currentTime;
+            // $counter++;
         }
     }
 }
