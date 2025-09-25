@@ -97,8 +97,8 @@ class Service
             return;
         }
 
-        if (!file_exists(DATA_DIR . '/motion.restart')) {
-            touch(DATA_DIR . '/motion.restart');
+        if (!file_exists(DATA_DIR . '/restart-motion.request')) {
+            touch(DATA_DIR . '/restart-motion.request');
         }
     }
 

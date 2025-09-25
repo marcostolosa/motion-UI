@@ -38,7 +38,7 @@ $units = [
         'description' => 'Monitors motion service status every minute',
         'controller' => 'Service\Unit\Monitoring',
         'method' => 'motionStatus',
-        'interval' => 'every-minute',
+        'interval' => 'every-hour',
         'log-dir' => 'motion/monitoring'
     ],
     // This checks for new version of the application every hour
@@ -48,6 +48,15 @@ $units = [
         'controller' => 'Service\Unit\Version',
         'method' => 'get',
         'interval' => 'every-hour',
+    ],
+    // This runs the autostart function every minute
+    'autostart' => [
+        'title' => 'Autostart',
+        'description' => 'Runs the autostart function to start and stop motion service automatically',
+        'controller' => 'Service\Unit\Autostart',
+        'method' => 'run',
+        'interval' => 'every-minute',
+        'log-dir' => 'motion/autostart'
     ],
     // This runs the timelapse function every minute
     'timelapse' => [
